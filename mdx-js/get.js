@@ -1,6 +1,6 @@
 /// function get
 /// Desc Sends a synchronized GET request for file
-function get (file, binary) {
+function get(file, binary) {
 	var request = new XMLHttpRequest();
 	var source;
 	
@@ -28,7 +28,7 @@ function get (file, binary) {
 
 /// function getA
 /// Desc Sends an asynchronous GET request for file
-function getA (file, binary) {
+function getA(file, binary) {
 	var request = new XMLHttpRequest();
 	var source;
 	

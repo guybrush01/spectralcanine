@@ -1,0 +1,53 @@
+<?xml version="1.0" charset="utf-8" ?>
+<!DOCTYPE HTML>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		
+		<link rel="stylesheet" type="text/css" href="test.css" />
+		
+		<script type="text/javascript" src="get.js"></script>
+		<script type="text/javascript" src="math.js"></script>
+		<script type="text/javascript" src="binarystream.js"></script>
+		<script type="text/javascript" src="header.js"></script>
+		<script type="text/javascript" src="level3.js"></script>
+		<script type="text/javascript" src="level2.js"></script>
+		<script type="text/javascript" src="level1.js"></script>
+		<script type="text/javascript" src="mdx.js"></script>
+		<script type="text/javascript" src="gl.js"></script>
+		<script type="text/javascript" src="test.js"></script>
+	</head>
+
+	<body>
+		<canvas id="webgl"></canvas>
+		<button id="activate" onclick="if (active) { activate(false); } else { activate(true); }"></button>
+	</body>
+	
+	<!--<script type="text/javascript" src="mdx-js.js"></script>-->
+	<script type="text/javascript">
+		var address = window.location.href;
+		var index = address.indexOf('?') + 1;
+		
+		if (index === 0) {
+			alert('You must enter a name test.html?q=NAME');
+		} else {
+			var string = address.substring(index, address.length);
+			var array = string.split('&');
+			var list = {};
+			var i;
+			
+			for (i = 0; i < array.length; i++) {
+				var arg = array[i].split('=');
+				list[arg[0]] = arg[1];
+			}
+			
+			if (list['q']) {
+				test(document.getElementById('webgl'), list['q']);
+			} else {
+				alert('You must enter a name test.html?q=NAME');
+			}
+		}
+	</script>
+</html>

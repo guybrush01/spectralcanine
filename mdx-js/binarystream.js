@@ -1,28 +1,150 @@
-/// class BinaryStream
-/// Desc Imitates a binary data stream
-function BinaryStream (file) {
-	this.data = get(file, true);
-	this.buffer = new ArrayBuffer(this.data.length);
-	this.dataview = new DataView(this.buffer);
+/*
+if (typeof window.DataView === 'undefined') {
+	var firefox = true;
 	
-	for (var i = 0; i < this.buffer.byteLength; i++) {
-		this.dataview.setUint8(i, this.data.charCodeAt(i));
+	window.DataView = function (buffer, data) {
+		var i;
+		
+		this.buffer = buffer;
+		this.data = data;
+		
+		this.int8 = new Int8Array(this.buffer);
+		this.uint8 = new Uint8Array(this.buffer);
+		
+		for (i = 0; i < this.buffer.byteLength; i++) {
+			this.uint8[i] = data.charCodeAt(i);
+		}
 	}
 	
+	window.DataView.prototype = {
+		read : function (byteOffset, bytes) {
+			var array = new Array(bytes);
+			var i;
+			
+			for (i = 0; i < bytes; i++) {
+				//console.log("loop " + i + ": " + "\x" + String(this.getUint8(byteOffset + i)));
+				//array[i] = this.data[byteOffset + i];
+				array[i] = this.uint8[byteOffset + i];
+				//array[i] = String.fromCharCode(String(this.data[byteOffset + i]));
+			}
+			
+			return array;
+		},
+		
+		getInt8 : function (byteOffset) {
+			return this.int8[byteOffset];
+		},
+		
+		getUint8 : function (byteOffset) {
+			return this.uint8[byteOffset];
+		},
+		
+		getInt16 : function (byteOffset, littleEndian) {
+			
+		},
+		
+		getUint16 : function (byteOffset, littleEndian) {
+			
+		},
+		
+		getInt32 : function (byteOffset, littleEndian) {
+			
+		},
+		
+		getUint32 : function (byteOffset, littleEndian) {
+			var data = Array(4);
+			
+			for (var i = 0; i < 4; i++) {
+				data[i] = this.getUint8(byteOffset + i);
+			}
+			
+			return data;
+			var array = new Uint32Array(data);
+			return array[0].toString(16);
+		},
+		
+		getFloat32 : function (byteOffset, littleEndian) {
+			var array = new Float32Array(this.buffer, byteOffset, 4);
+			return array[0];
+		},
+		
+		getFloat64 : function (byteOffset, littleEndian) {
+			
+		},
+		
+		setInt8 : function (byteOffset, value) {
+			this.int8[byteOffset] = value;
+		},
+		
+		setUint8 : function (byteOffset, value) {
+			this.uint8[byteOffset] = value;
+		},
+		
+		setInt16 : function (byteOffset, value, littleEndian) {
+			
+		},
+		
+		setUint16 : function (byteOffset, value, littleEndian) {
+			
+		},
+		
+		setInt32 : function (byteOffset, value, littleEndian) {
+			
+		},
+		
+		setUint32 : function (byteOffset, value, littleEndian) {
+			
+		},
+		
+		setFloat32 : function (byteOffset, value, littleEndian) {
+			
+		},
+		
+		setFloat64 : function (byteOffset, value, littleEndian) {
+			
+		}
+	};
+}
+*/
+/// class BinaryStream
+/// Desc Imitates a binary data stream
+function BinaryStream(file) {
+	var i;
+	
+	this.data = get(file, true);
+	this.buffer = new ArrayBuffer(this.data.length);
 	this.index = 0;
+	
+	//if (firefox === true) {
+	//	this.dataview = new DataView(this.buffer, this.data);
+	//} else {
+		this.dataview = new DataView(this.buffer);
+	
+		for (i = 0; i < this.buffer.byteLength; i++) {
+			this.dataview.setUint8(i, this.data.charCodeAt(i));
+		}
+	//}
 }
 
 BinaryStream.prototype = {
 	/// method BinaryStream#size
 	/// Desc Returns the size of the stream
 	size : function () {
-		return this.buffer.byteLength;
+		//if (firefox === true) {
+		//	return this.data.length;
+		//} else {
+			return this.buffer.byteLength;
+		//}
 	},
 	
 	/// method BinaryStream#sizeRemaining
 	/// Desc Returns the size remaining to be read from the internal index
 	sizeRemaining : function () {
-		return this.buffer.byteLength - this.index;
+		//if (firefox === true) {
+		//	return this.data.length - this.index;
+		//} else {
+			return this.buffer.byteLength - this.index;
+		//}
 	},
 	
 	/// method BinaryStream#skip
@@ -46,9 +168,10 @@ BinaryStream.prototype = {
 	/// Desc Reads size bytes and returns them as a string
 	read : function (size) {
 		if (this.sizeRemaining() >= size) {
-			var data = Array(size);
+			var data = new Array(size);
+			var i;
 			
-			for (var i = 0; i < size; i++) {
+			for (i = 0; i < size; i++) {
 				data[i] = String.fromCharCode(String(this.dataview.getUint8(this.index + i)));
 			}
 			
@@ -79,11 +202,13 @@ BinaryStream.prototype = {
 	readInt8Array : function (size) {
 		if (this.sizeRemaining() >= size) {
 			var data = [];
+			var i;
 			
-			for (var i = 0; i < size; i++) {
-				data[i] = this.dataview.getInt8(this.index);
-				this.index += 1;
+			for (i = 0; i < size; i++) {
+				data[i] = this.dataview.getInt8(this.index + i);
 			}
+			
+			this.index += size;
 			
 			return data;
 		} else {
@@ -110,8 +235,9 @@ BinaryStream.prototype = {
 	readInt16Array : function (size) {
 		if (this.sizeRemaining() >= (size * 2)) {
 			var data = [];
+			var i;
 			
-			for (var i = 0; i < size; i++) {
+			for (i = 0; i < size; i++) {
 				data[i] = this.dataview.getInt16(this.index + (i * 2), true);
 			}
 			
@@ -142,8 +268,9 @@ BinaryStream.prototype = {
 	readInt32Array : function (size) {
 		if (this.sizeRemaining() >= (size * 4)) {
 			var data = [];
+			var i;
 			
-			for (var i = 0; i < size; i++) {
+			for (i = 0; i < size; i++) {
 				data[i] = this.dataview.getInt32(this.index + (i * 4), true);
 			}
 			
@@ -174,8 +301,9 @@ BinaryStream.prototype = {
 	readUint8Array : function (size) {
 		if (this.sizeRemaining() >= size) {
 			var data = [];
+			var i;
 			
-			for (var i = 0; i < size; i++) {
+			for (i = 0; i < size; i++) {
 				data[i] = this.dataview.getUint8(this.index + i);
 			}
 			
@@ -206,8 +334,9 @@ BinaryStream.prototype = {
 	readUint16Array : function (size) {
 		if (this.sizeRemaining() >= (size * 2)) {
 			var data = [];
+			var i;
 			
-			for (var i = 0; i < size; i++) {
+			for (i = 0; i < size; i++) {
 				data[i] = this.dataview.getUint16(this.index + (i * 2), true);
 			}
 			
@@ -238,9 +367,10 @@ BinaryStream.prototype = {
 	readUint32Array : function (size) {
 		if (this.sizeRemaining() >= (size * 4)) {
 			var data = [];
+			var i;
 			
-			for (var i = 0; i < size; i++) {
-				data[i] = this.dataview.getUint32(this.index + (i * 4), true);	
+			for (i = 0; i < size; i++) {
+				data[i] = this.dataview.getUint32(this.index + (i * 4), true);
 			}
 			
 			this.index += size * 4;
@@ -270,8 +400,9 @@ BinaryStream.prototype = {
 	readFloat32Array : function (size) {
 		if (this.sizeRemaining() >= (size * 4)) {
 			var data = [];
+			var i;
 			
-			for (var i = 0; i < size; i++) {
+			for (i = 0; i < size; i++) {
 				data[i] = this.dataview.getFloat32(this.index + (i * 4), true);
 			}
 			
@@ -302,8 +433,9 @@ BinaryStream.prototype = {
 	readFloat64Array : function (size) {
 		if (this.sizeRemaining() >= (size * 8)) {
 			var data = [];
+			var i;
 			
-			for (var i = 0; i < size; i++) {
+			for (i = 0; i < size; i++) {
 				data[i] = this.dataview.getFloat64(this.index + (i * 8), true);
 			}
 			

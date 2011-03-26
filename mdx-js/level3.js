@@ -1,30 +1,30 @@
 /// class VertexPosition
 /// Desc A vector describing a 3D vertex
-function VertexPosition (stream) {
+function MdxVertexPosition(stream) {
 	this.position = stream.readFloat32Array(3);
 }
 
 /// class VertexNormal
 /// Desc A vector describing a 3D normal
-function VertexNormal (stream) {
+function MdxVertexNormal(stream) {
 	this.normal = stream.readFloat32Array(3);
 }
 
 /// class FaceTypeGroup
 /// Desc ?
-function FaceTypeGroup (stream) {
+function MdxFaceTypeGroup(stream) {
 	this.faceType = stream.readUint32();
 }
 
 /// class FaceGroup
 /// Desc ?
-function FaceGroup (stream) {
+function MdxFaceGroup(stream) {
 	this.nrOfIndexes = stream.readUint32();
 }
 
 /// class Face
 /// Desc A triplet of integers that describe indices to vertices that form a triangle
-function Face (stream) {
+function MdxFace(stream) {
 	this.index1 = stream.readUint16();
 	this.index2 = stream.readUint16();
 	this.index3 = stream.readUint16();
@@ -32,25 +32,25 @@ function Face (stream) {
 
 /// class VertexGroup
 /// Desc ?
-function VertexGroup (stream) {
+function MdxVertexGroup(stream) {
 	this.matrixGroup = stream.readUint8();
 }
 
 /// class MatrixGroup
 /// Desc ?
-function MatrixGroup (stream) {
+function MdxMatrixGroup(stream) {
 	this.matrixGroupSize = stream.readUint32();
 }
 
 /// class MatrixIndex
 /// Desc ?
-function MatrixIndex (stream) {
+function MdxMatrixIndex(stream) {
 	this.matrixIndex = stream.readUint32();
 }
 
 /// class Extent
 /// Desc ?
-function Extent (stream) {
+function MdxExtent(stream) {
 	this.boundsRadius = stream.readFloat32();
 	this.minimumExtent = stream.readFloat32Array(3);
 	this.maximumExtent = stream.readFloat32Array(3);
@@ -58,6 +58,6 @@ function Extent (stream) {
 
 /// class VertexTexturePosition
 /// Desc A vector describing a 2D point in a texture
-function VertexTexturePosition (stream) {
+function MdxVertexTexturePosition(stream) {
 	this.texturePosition = stream.readFloat32Array(2);
 }

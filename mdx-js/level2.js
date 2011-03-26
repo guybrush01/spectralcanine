@@ -1,10 +1,10 @@
 /// class TranslationTrack
 /// Desc ?
-function TranslationTrack (stream, interpolationType) {
+function MdxTranslationTrack(stream, interpolationType) {
 	this.time = stream.readUint32();
 	this.translation = stream.readFloat32Array(3);
 	
-	if (interpolation > 1) {
+	if (interpolationType > 1) {
 		this.inTan = stream.readFloat32Array(3);
 		this.outTan = stream.readFloat32Array(3);
 	}
@@ -12,11 +12,11 @@ function TranslationTrack (stream, interpolationType) {
     
 /// class RotationTrack
 /// Desc ?
-function RotationTrack (stream, interpolationType) {
+function MdxRotationTrack(stream, interpolationType) {
 	this.time = stream.readUint32();
 	this.rotation = stream.readFloat32Array(4);
 	
-	if (interpolation > 1) {
+	if (interpolationType > 1) {
 		this.inTan = stream.readFloat32Array(4);
 		this.outTan = stream.readFloat32Array(4);
 	}
@@ -24,7 +24,7 @@ function RotationTrack (stream, interpolationType) {
 
 /// class ScalingTrack
 /// Desc ?
-function ScalingTrack (stream, interpolationType) {
+function MdxScalingTrack(stream, interpolationType) {
 	this.time = stream.readUint32();
 	this.scalling = stream.readFloat32Array(3);
 	
@@ -36,7 +36,7 @@ function ScalingTrack (stream, interpolationType) {
 
 /// class AlphaTrack
 /// Desc ?
-function AlphaTrack (stream, interpolationType) {
+function MdxAlphaTrack(stream, interpolationType) {
 	this.time = stream.readUint32();
 	this.alpha = stream.readFloat32();
 	
@@ -48,7 +48,7 @@ function AlphaTrack (stream, interpolationType) {
 
 /// class TextureIdTrack
 /// Desc ?
-function TextureIdTrack (stream, interpolationType) {
+function MdxTextureIdTrack(stream, interpolationType) {
 	this.time = stream.readUint32();
 	this.textureId = stream.readUint32();
 	
@@ -60,7 +60,7 @@ function TextureIdTrack (stream, interpolationType) {
 
 /// class ColorTrack
 /// Desc ?
-function ColorTrack (stream, interpolationType) {
+function MdxColorTrack(stream, interpolationType) {
 	this.time = stream.readUint32();
 	this.color = stream.readFloat32Array(3);
 	
@@ -72,8 +72,9 @@ function ColorTrack (stream, interpolationType) {
 
 /// class Sequence
 /// Desc ?
-function Sequence (stream) {
-	this.name = stream.read(80);
+function MdxSequence(stream) {
+	var name = stream.read(80);
+	this.name = name.substring(0, name.indexOf('\0'));
 	this.intervalStart = stream.readUint32();
 	this.intervalEnd = stream.readUint32();
 	this.moveSpeed = stream.readFloat32();
@@ -100,7 +101,7 @@ function Sequence (stream) {
 
 /// class GlobalSequence
 /// Desc ?
-function GlobalSequence (stream) {
+function MdxGlobalSequence(stream) {
 	this.duration = stream.readUint32();
 	
 	if (typeof debug !== 'undefined') {
@@ -110,9 +111,10 @@ function GlobalSequence (stream) {
 
 /// class Texture
 /// Desc ?
-function Texture (stream) {
+function MdxTexture(stream) {
 	this.replaceableId = stream.readUint32();
-	this.fileName = stream.read(260);
+	var fileName = stream.read(260);
+	this.fileName = fileName.substring(0, fileName.indexOf('\0')).replace(/\\/g, '/');
 	this.flags = stream.readUint32();
 	
 	if (typeof debug !== 'undefined') {
@@ -120,17 +122,26 @@ function Texture (stream) {
 		console.log("\t\tfileName = " + this.fileName);
 		console.log("\t\tflags = " + this.flags);
 	}
+	
+	if (this.fileName !== '') {
+		this.httpName = this.fileName.substring(0, this.fileName.lastIndexOf('.')) + '.png';
+		this.texture = Gl.state.getTexture(this.httpName);
+	}
 }
 
 /// class Layer
 /// Desc ?
 /// Uses class MaterialAlpha
 /// Uses class MaterialTextureId
-function Layer (stream) {
+function MdxLayer(stream) {
 	var inclusiveSize = stream.readUint32();
+	var i;
+	
 	this.filterMode = stream.readUint32();
 	this.shadingFlags = stream.readUint32();
+	console.log(stream.index);
 	this.textureId = stream.readUint32();
+	console.log(this.textureId);
 	this.textureAnimationId = stream.readUint32();
 	this.coordId = stream.readUint32();
 	this.alpha = stream.readFloat32();
@@ -145,21 +156,21 @@ function Layer (stream) {
 	}
 	
 	if (inclusiveSize > 28) {
-		for (var i = 0; i < 2; i++) {
+		for (i = 0; i < 2; i++) {
 			var token = stream.read(4);
 			
-			if (token == "KMTA") {
+			if (token === "KMTA") {
 				if (typeof debug !== 'undefined') {
 					console.log("\t\t\t\tmaterialAlpha");
 				}
 				
-				this.materialAlpha = new MaterialAlpha(stream);
-			} else if (token == "KMTF") {
+				this.materialAlpha = new MdxMaterialAlpha(stream);
+			} else if (token === "KMTF") {
 				if (typeof debug !== 'undefined') {
 					console.log("\t\t\t\tmaterialTextureId");
 				}
 				
-				this.materialTextureId = new MaterialTextureId(stream);
+				this.materialTextureId = new MdxMaterialTextureId(stream);
 			} else {
 				stream.skip(-4);
 			}
@@ -170,9 +181,10 @@ function Layer (stream) {
 /// class Material
 /// Desc ?
 /// Uses class LayerChunk
-function Material (stream) {
+function MdxMaterial(stream) {
 	this.priorityPlane = stream.readUint32();
 	this.flags = stream.readUint32();
+	
 	var token = stream.read(4);
 	
 	if (typeof debug !== 'undefined') {
@@ -180,12 +192,12 @@ function Material (stream) {
 		console.log("\t\tflags = " + this.flags);
 	}
 	
-	if (token == "LAYS") {
+	if (token === "LAYS") {
 		if (typeof debug !== 'undefined') {
 			console.log("\t\tlayerChunk");
 		}
 		
-		this.layerChunk = new LayerChunk(stream);
+		this.layerChunk = new MdxLayerChunk(stream);
 	} else {
 		stream.skip(-4);
 	}
@@ -196,7 +208,7 @@ function Material (stream) {
 /// Uses class TextureTranslation
 /// Uses class TextureRotation
 /// Uses class TextureScaling
-function TextureAnimation (stream) {
+function MdxTextureAnimation(stream) {
 	
 }
 
@@ -212,78 +224,81 @@ function TextureAnimation (stream) {
 /// Uses class MatrixIndex
 /// Uses class Extent
 /// Uses class VertexTexturePosition
-function Geoset (stream) {
+function MdxGeoset(stream) {
 	stream.readExpected("VRTX");
 	
 	var nrOfVertexPositions = stream.readUint32();
-	this.vertexPositions = Array(nrOfVertexPositions);
+	var i;
+	var j;
 	
-	for (var i = 0; i < nrOfVertexPositions; i++) {
-		this.vertexPositions[i] = new VertexPosition(stream);
+	this.vertexPositions = new Array(nrOfVertexPositions);
+	
+	for (i = 0; i < nrOfVertexPositions; i++) {
+		this.vertexPositions[i] = new MdxVertexPosition(stream);
 	}
 	
 	stream.readExpected("NRMS");
 	
 	var nrOfVertexNormals = stream.readUint32();
-	this.vertexNormals = Array(nrOfVertexNormals);
+	this.vertexNormals = new Array(nrOfVertexNormals);
 	
-	for (var i = 0; i < nrOfVertexNormals; i++) {
-		this.vertexNormals[i] = new VertexNormal(stream);
+	for (i = 0; i < nrOfVertexNormals; i++) {
+		this.vertexNormals[i] = new MdxVertexNormal(stream);
 	}
 	
 	stream.readExpected("PTYP");
 	
 	var nrOfFaceTypeGroups = stream.readUint32();
-	this.faceTypeGroups = Array(nrOfFaceTypeGroups);
+	this.faceTypeGroups = new Array(nrOfFaceTypeGroups);
 	
-	for (var i = 0; i < nrOfFaceTypeGroups; i++) {
-		this.faceTypeGroups[i] = new FaceTypeGroup(stream);
+	for (i = 0; i < nrOfFaceTypeGroups; i++) {
+		this.faceTypeGroups[i] = new MdxFaceTypeGroup(stream);
 	}
 	
 	stream.readExpected("PCNT");
 	
 	var nrOfFaceGroups = stream.readUint32();
-	this.faceGroups = Array(nrOfFaceGroups);
+	this.faceGroups = new Array(nrOfFaceGroups);
 	
-	for (var i = 0; i < nrOfFaceGroups; i++) {
-		this.faceGroups[i] = new FaceGroup(stream);
+	for (i = 0; i < nrOfFaceGroups; i++) {
+		this.faceGroups[i] = new MdxFaceGroup(stream);
 	}
 	
 	stream.readExpected("PVTX");
 	
 	var totalNrOfIndexes = stream.readUint32();
 	var totalNrOfFaces = totalNrOfIndexes / 3;
-	this.faces = Array(totalNrOfFaces);
+	this.faces = new Array(totalNrOfFaces);
 	
-	for (var i = 0; i < totalNrOfFaces; i++) {
-		this.faces[i] = new Face(stream);
+	for (i = 0; i < totalNrOfFaces; i++) {
+		this.faces[i] = new MdxFace(stream);
 	}
 	
 	stream.readExpected("GNDX");
 	
 	var nrOfVertexGroups = stream.readUint32();
-	this.vertexGroups = Array(nrOfVertexGroups);
+	this.vertexGroups = new Array(nrOfVertexGroups);
 	
-	for (var i = 0; i < nrOfVertexGroups; i++) {
-		this.vertexGroups[i] = new VertexGroup(stream);
+	for (i = 0; i < nrOfVertexGroups; i++) {
+		this.vertexGroups[i] = new MdxVertexGroup(stream);
 	}
 	
 	stream.readExpected("MTGC");
 	
 	var nrOfMatrixGroups = stream.readUint32();
-	this.matrixGroups = Array(nrOfMatrixGroups);
+	this.matrixGroups = new Array(nrOfMatrixGroups);
 	
-	for (var i = 0; i < nrOfMatrixGroups; i++) {
-		this.matrixGroups[i] = new MatrixGroup(stream);
+	for (i = 0; i < nrOfMatrixGroups; i++) {
+		this.matrixGroups[i] = new MdxMatrixGroup(stream);
 	}
 	
 	stream.readExpected("MATS");
 	
 	var nrOfMatrixIndexes = stream.readUint32();
-	this.matrixIndexes = Array(nrOfMatrixIndexes);
+	this.matrixIndexes = new Array(nrOfMatrixIndexes);
 	
-	for (var i = 0; i < nrOfMatrixIndexes; i++) {
-		this.matrixIndexes[i] = new MatrixIndex(stream);
+	for (i = 0; i < nrOfMatrixIndexes; i++) {
+		this.matrixIndexes[i] = new MdxMatrixIndex(stream);
 	}
 	
 	this.materialId = stream.readUint32();
@@ -294,10 +309,10 @@ function Geoset (stream) {
 	this.maximumExtent = stream.readFloat32Array(3);
 	
 	var nrOfExtents = stream.readUint32();
-	this.extents = Array(nrOfExtents);
+	this.extents = new Array(nrOfExtents);
 	
-	for (var i = 0; i < nrOfExtents; i++) {
-		this.extents[i] = new Extent(stream);
+	for (i = 0; i < nrOfExtents; i++) {
+		this.extents[i] = new MdxExtent(stream);
 	}
 	
 	stream.readExpected("UVAS");
@@ -307,10 +322,10 @@ function Geoset (stream) {
 	stream.readExpected("UVBS");
 	
 	var nrOfVertexTexturePositions = stream.readUint32();
-	this.vertexTexturePositions = Array(nrOfVertexTexturePositions);
+	this.vertexTexturePositions = new Array(nrOfVertexTexturePositions);
 	
-	for (var i = 0; i < nrOfVertexTexturePositions; i++) {
-		this.vertexTexturePositions[i] = new VertexTexturePosition(stream);
+	for (i = 0; i < nrOfVertexTexturePositions; i++) {
+		this.vertexTexturePositions[i] = new MdxVertexTexturePosition(stream);
 	}
 	
 	if (typeof debug !== 'undefined') {
@@ -335,7 +350,7 @@ function Geoset (stream) {
 	var array = new Float32Array(this.vertexPositions.length * 8);
 	var index = new Uint16Array(this.faces.length * 3);
 	
-	for (var i = 0, j = 0; i < this.vertexPositions.length; i++, j += 8) {
+	for (i = 0, j = 0; i < this.vertexPositions.length; i++, j += 8) {
 		var position = this.vertexPositions[i].position;
 		var normal = this.vertexNormals[i].normal;
 		var texcoord = this.vertexTexturePositions[i].texturePosition;
@@ -352,51 +367,51 @@ function Geoset (stream) {
 		array[j + 7] = texcoord[1];
 	}
 	
-	for (var i = 0, j = 0; i < this.faces.length; i++, j += 3) {
+	for (i = 0, j = 0; i < this.faces.length; i++, j += 3) {
 		var face = this.faces[i];
 		
-		index[j] = face[0];
-		index[j + 1] = face[1];
-		index[j + 2] = face[2];
+		index[j] = face.index1;
+		index[j + 1] = face.index2;
+		index[j + 2] = face.index3;
 	}
 	
-	this.buffers = new Object;
-	this.buffers.array = gl.createBuffer();
-	this.buffers.index = gl.createBuffer();
+	this.buffers = {};
+	this.buffers.array = Gl.createBuffer();
+	this.buffers.index = Gl.createBuffer();
 	
-	gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.array);
-	gl.bufferData(gl.ARRAY_BUFFER, array, gl.STATIC_DRAW);
+	Gl.bindBuffer(Gl.ARRAY_BUFFER, this.buffers.array);
+	Gl.bufferData(Gl.ARRAY_BUFFER, array, Gl.STATIC_DRAW);
 	this.buffers.array.length = this.vertexPositions.length * 8;
 	
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.index);
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, index, gl.STATIC_DRAW);
+	Gl.bindBuffer(Gl.ELEMENT_ARRAY_BUFFER, this.buffers.index);
+	Gl.bufferData(Gl.ELEMENT_ARRAY_BUFFER, index, Gl.STATIC_DRAW);
 	this.buffers.index.length = this.faces.length * 3;
 }
 
 
-Geoset.prototype = {
+MdxGeoset.prototype = {
 	/// method Geoset#draw
-	/// Desc Draws the geoset using an attribute locations array in the format of [vertex, normal, texcoord]
-	draw : function (attribs) {
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.array);
-		gl.vertexAttribPointer(attribs[0], 3, gl.FLOAT, false, 0, 0);
-	
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.array);
-		gl.vertexAttribPointer(attribs[1], 3, gl.FLOAT, false, 12, 0);
+	/// Desc Draws the geoset
+	draw : function Mdx(program) {
+		var attributes = program.attributes;
 		
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.array);
-		gl.vertexAttribPointer(attribs[2], 2, gl.FLOAT, false, 24, 0);
+		Gl.bindBuffer(Gl.ARRAY_BUFFER, this.buffers.array);
+		Gl.vertexAttribPointer(attributes.in_vertex, 3, Gl.FLOAT, false, 32, 0);
+		Gl.vertexAttribPointer(attributes.in_normal, 3, Gl.FLOAT, false, 32, 12);
+		Gl.vertexAttribPointer(attributes.in_texcoord, 2, Gl.FLOAT, false, 32, 24);
 		
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.index);
-		gl.drawElements(gl.TRIANGLES, this.buffers.index.length, gl.UNSIGNED_SHORT, 0);
+		Gl.bindBuffer(Gl.ELEMENT_ARRAY_BUFFER, this.buffers.index);
+		Gl.drawElements(Gl.TRIANGLES, this.buffers.index.length, Gl.UNSIGNED_SHORT, 0);
 	}
-}
+};
 
 /// class GeosetAnimation
 /// Desc ?
 /// Uses class GeosetAlpha
 /// Uses class GeosetColor
-function GeosetAnimation (stream) {
+function MdxGeosetAnimation(stream) {
+	var i;
+	
 	this.alpha = stream.readUint32();
 	this.flags = stream.readFloat32();
 	this.color = stream.readFloat32Array(3);
@@ -409,21 +424,21 @@ function GeosetAnimation (stream) {
 		console.log("\t\tgeosetId = " + this.geosetId);
 	}
 	
-	for (var i = 0; i < 2; i++) {
+	for (i = 0; i < 2; i++) {
 		var token = stream.read(4);
 		
-		if (token == "KGAO") {
+		if (token === "KGAO") {
 			if (typeof debug !== 'undefined') {
 				console.log("\t\tgeosetAlpha");
 			}
 			
-			this.geosetAlpha = new GeosetAlpha(stream);
-		} else if (token == "KGAC") {
+			this.geosetAlpha = new MdxGeosetAlpha(stream);
+		} else if (token === "KGAC") {
 			if (typeof debug !== 'undefined') {
 				console.log("\t\tgeosetColor");
 			}
 			
-			this.geosetColor = new GeosetColor(stream);
+			this.geosetColor = new MdxGeosetColor(stream);
 		} else {
 			stream.skip(-4);
 		}
@@ -433,7 +448,7 @@ function GeosetAnimation (stream) {
 /// class Bone
 /// Desc ?
 /// Uses class Node
-function Bone (stream) {
+function MdxBone(stream) {
 	
 }
 
@@ -445,14 +460,14 @@ function Bone (stream) {
 /// Uses class LightIntensity
 /// Uses class LightAmbientColor
 /// Uses class LightAmbientIntensity
-function Light (stream) {
+function MdxLight(stream) {
 	
 }
 
 /// class Helper
 /// Desc ?
 /// Uses class Node
-function Helper (stream) {
+function MdxHelper(stream) {
 	
 }
 
@@ -460,13 +475,13 @@ function Helper (stream) {
 /// Desc ?
 /// Uses class Node
 /// Uses class AttachmentVisibility
-function Attachment (stream) {
+function MdxAttachment(stream) {
 	
 }
 
 /// class PivotPoint
 /// Desc ?
-function PivotPoint (stream) {
+function MdxPivotPoint(stream) {
 	this.position = stream.readFloat32Array(3);
 }
 
@@ -474,7 +489,7 @@ function PivotPoint (stream) {
 /// Desc ?
 /// Uses class Node
 /// Uses class ParticleEmitterVisibility
-function ParticleEmitter (stream) {
+function MdxParticleEmitter(stream) {
 	
 }
 
@@ -486,7 +501,7 @@ function ParticleEmitter (stream) {
 /// Uses class ParticleEmitter2Width
 /// Uses class ParticleEmitter2Length
 /// Uses class ParticleEmitter2Speed
-function ParticleEmitter2 (stream) {
+function MdxParticleEmitter2(stream) {
 	
 }
 
@@ -496,13 +511,13 @@ function ParticleEmitter2 (stream) {
 /// Uses class RibbonEmitterVisibility
 /// Uses class RibbonEmitterHeightAbove
 /// Uses class RibbonEmitterHeightBelow
-function RibbonEmitter (stream) {
+function MdxRibbonEmitter(stream) {
 	
 }
 
 /// class Track
 /// Desc ?
-function Track (stream) {
+function MdxTrack(stream) {
 	this.time = stream.readUint32();
 }
 
@@ -510,7 +525,7 @@ function Track (stream) {
 /// Desc ?
 /// Uses class Node
 /// Uses class Tracks
-function EventObject (stream) {
+function MdxEventObject(stream) {
 	
 }
 
@@ -518,7 +533,7 @@ function EventObject (stream) {
 /// Desc ?
 /// Uses class CameraPositionTranslation
 /// Uses class CameraTargetTranslation
-function Camera (stream) {
+function MdxCamera(stream) {
 	
 }
 
@@ -526,6 +541,6 @@ function Camera (stream) {
 /// Desc ?
 /// Uses class Node
 /// Uses class Vertex
-function CollisionShape (stream) {
+function MdxCollisionShape(stream) {
 	
 }

@@ -2,7 +2,7 @@
 /// Desc ?
 /// Id KTGR
 /// Uses class TranslationTrack
-function GeosetTranslation (stream) {
+function MdxGeosetTranslation(stream) {
 	/*
 	var nrOfTracks = stream.readUint32();
 	
@@ -20,7 +20,7 @@ function GeosetTranslation (stream) {
 /// Desc ?
 /// Id KGRT
 /// Uses class RotationTrack
-function GeosetRotation (stream) {
+function MdxGeosetRotation(stream) {
 	/*
 	var nrOfTracks = stream.readUint32();
 	
@@ -38,7 +38,7 @@ function GeosetRotation (stream) {
 /// Desc ?
 /// Id KGSC
 /// Uses class ScalingTrack
-function GeosetScaling (stream) {
+function MdxGeosetScaling(stream) {
 	/*
 	var nrOfTracks = stream.readUint32();
 	
@@ -56,15 +56,16 @@ function GeosetScaling (stream) {
 /// Desc ?
 /// Id KGAO
 /// Uses class AlphaTrack
-function GeosetAlpha (stream) {
+function MdxGeosetAlpha(stream) {
 	var nrOfTracks = stream.readUint32();
+	var i;
 	
 	this.interpolationType = stream.readUint32();
 	this.globalSequenceId = stream.readUint32();
-	this.alphaTracks = Array(nrOfTracks);
+	this.alphaTracks = new Array(nrOfTracks);
 
-	for (var i = 0; i < nrOfTracks; i++) {
-		this.alphaTracks[i] = new AlphaTrack(stream, this.interpolationType);
+	for (i = 0; i < nrOfTracks; i++) {
+		this.alphaTracks[i] = new MdxAlphaTrack(stream, this.interpolationType);
 	}
 	
 	if (typeof debug !== 'undefined') {
@@ -78,15 +79,16 @@ function GeosetAlpha (stream) {
 /// Desc ?
 /// Id KGAC
 /// Uses class ColorTrack
-function GeosetColor (stream) {
+function MdxGeosetColor(stream) {
 	var nrOfTracks = stream.readUint32();
+	var i;
 	
 	this.interpolationType = stream.readUint32();
 	this.globalSequenceId = stream.readUint32();
-	this.colorTracks = Array(nrOfTracks);
+	this.colorTracks = new Array(nrOfTracks);
 
-	for (var i = 0; i < nrOfTracks; i++) {
-		this.colorTracks[i] = new ColorTrack(stream, this.interpolationType);
+	for (i = 0; i < nrOfTracks; i++) {
+		this.colorTracks[i] = new MdxColorTrack(stream, this.interpolationType);
 	}
 	
 	if (typeof debug !== 'undefined') {
@@ -100,7 +102,7 @@ function GeosetColor (stream) {
 /// Desc ?
 /// Id KTAT
 /// Uses class TranslationTrack
-function TextureTranslation (stream) {
+function MdxTextureTranslation(stream) {
 	/*
 	var nrOfTracks = stream.readUint32();
 	
@@ -118,7 +120,7 @@ function TextureTranslation (stream) {
 /// Desc ?
 /// Id KTAR
 /// Uses class RotationTrack
-function TextureRotation (stream) {
+function MdxTextureRotation(stream) {
 	/*
 	var nrOfTracks = stream.readUint32();
 	
@@ -136,7 +138,7 @@ function TextureRotation (stream) {
 /// Desc ?
 /// Id KTAS
 /// Uses class ScalingTrack
-function TextureScaling (stream) {
+function MdxTextureScaling(stream) {
 	/*
 	var nrOfTracks = stream.readUint32();
 	
@@ -154,7 +156,7 @@ function TextureScaling (stream) {
 /// Desc ?
 /// Id KCTR
 /// Uses class TranslationTrack
-function CameraPositionTranslation (stream) {
+function MdxCameraPositionTranslation(stream) {
 	/*
 	var nrOfTracks = stream.readUint32();
 	
@@ -172,7 +174,7 @@ function CameraPositionTranslation (stream) {
 /// Desc ?
 /// Id KTTR
 /// Uses class TranslationTrack
-function CameraTargetTranslation (stream) {
+function MdxCameraTargetTranslation(stream) {
 	/*
 	var nrOfTracks = stream.readUint32();
 	
@@ -190,7 +192,7 @@ function CameraTargetTranslation (stream) {
 /// Desc ?
 /// Id KCRL
 /// Uses class TranslationTrack
-function CameraRotation (stream) {
+function MdxCameraRotation(stream) {
 	/*
 	var nrOfTracks = stream.readUint32();
 	
@@ -208,15 +210,16 @@ function CameraRotation (stream) {
 /// Desc ?
 /// Id KMTF
 /// Uses class ScalingTrack
-function MaterialTextureId (stream) {
+function MdxMaterialTextureId(stream) {
 	var nrOfTracks = stream.readUint32();
+	var i;
 	
 	this.interpolationType = stream.readUint32();
 	this.globalSequenceId = stream.readUint32();
-	this.textureIdTracks = Array(nrOfTracks);
+	this.textureIdTracks = new Array(nrOfTracks);
 
-	for (var i = 0; i < nrOfTracks; i++) {
-		this.textureIdTracks[i] = new TextureIdTrack(stream, this.interpolationType);
+	for (i = 0; i < nrOfTracks; i++) {
+		this.textureIdTracks[i] = new MdxTextureIdTrack(stream, this.interpolationType);
 	}
 	
 	if (typeof debug !== 'undefined') {
@@ -230,15 +233,16 @@ function MaterialTextureId (stream) {
 /// Desc ?
 /// Id KMTA
 /// Uses class ScalingTrack
-function MaterialAlpha (stream) {
+function MdxMaterialAlpha(stream) {
 	var nrOfTracks = stream.readUint32();
+	var i;
 	
 	this.interpolationType = stream.readUint32();
 	this.globalSequenceId = stream.readUint32();
-	this.alphaTracks = Array(nrOfTracks);
+	this.alphaTracks = new Array(nrOfTracks);
 	
-	for (var i = 0; i < nrOfTracks; i++) {
-		this.alphaTracks[i] = new AlphaTrack(stream, this.interpolationType);
+	for (i = 0; i < nrOfTracks; i++) {
+		this.alphaTracks[i] = new MdxAlphaTrack(stream, this.interpolationType);
 	}
 	
 	if (typeof debug !== 'undefined') {
@@ -252,7 +256,7 @@ function MaterialAlpha (stream) {
 /// Desc ?
 /// Id KATV
 /// Uses class ScalingTrack
-function AttachmentVisibility (stream) {
+function MdxAttachmentVisibility(stream) {
 	
 }
 
@@ -260,7 +264,7 @@ function AttachmentVisibility (stream) {
 /// Desc ?
 /// Id KLAV
 /// Uses class ScalingTrack
-function LightVisibility (stream) {
+function MdxLightVisibility(stream) {
 	
 }
 
@@ -268,7 +272,7 @@ function LightVisibility (stream) {
 /// Desc ?
 /// Id KLAC
 /// Uses class ScalingTrack
-function LightColor (stream) {
+function MdxLightColor(stream) {
 	
 }
 
@@ -276,7 +280,7 @@ function LightColor (stream) {
 /// Desc ?
 /// Id KLAI
 /// Uses class ScalingTrack
-function LightIntensity (stream) {
+function MdxLightIntensity(stream) {
 	
 }
 
@@ -284,7 +288,7 @@ function LightIntensity (stream) {
 /// Desc ?
 /// Id KLBC
 /// Uses class ScalingTrack
-function LightAmbientColor (stream) {
+function MdxLightAmbientColor(stream) {
 	
 }
 
@@ -292,7 +296,7 @@ function LightAmbientColor (stream) {
 /// Desc ?
 /// Id KLBI
 /// Uses class ScalingTrack
-function LightAmbientIntensity (stream) {
+function MdxLightAmbientIntensity(stream) {
 	
 }
 
@@ -300,7 +304,7 @@ function LightAmbientIntensity (stream) {
 /// Desc ?
 /// Id KPEV
 /// Uses class ScalingTrack
-function ParticleEmitterVisibility (stream) {
+function MdxParticleEmitterVisibility(stream) {
 	
 }
 
@@ -308,7 +312,7 @@ function ParticleEmitterVisibility (stream) {
 /// Desc ?
 /// Id KP2V
 /// Uses class ScalingTrack
-function ParticleEmitter2Visibility (stream) {
+function MdxParticleEmitter2Visibility(stream) {
 	
 }
 
@@ -316,7 +320,7 @@ function ParticleEmitter2Visibility (stream) {
 /// Desc ?
 /// Id KP2E
 /// Uses class ScalingTrack
-function ParticleEmitter2EmissionRate (stream) {
+function MdxParticleEmitter2EmissionRate(stream) {
 	
 }
 
@@ -324,7 +328,7 @@ function ParticleEmitter2EmissionRate (stream) {
 /// Desc ?
 /// Id KP2W
 /// Uses class ScalingTrack
-function ParticleEmitter2Width (stream) {
+function MdxParticleEmitter2Width(stream) {
 	
 }
 
@@ -332,7 +336,7 @@ function ParticleEmitter2Width (stream) {
 /// Desc ?
 /// Id KP2N
 /// Uses class ScalingTrack
-function ParticleEmitter2Length (stream) {
+function MdxParticleEmitter2Length(stream) {
 	
 }
 
@@ -340,7 +344,7 @@ function ParticleEmitter2Length (stream) {
 /// Desc ?
 /// Id KP2S
 /// Uses class ScalingTrack
-function ParticleEmitter2Speed (stream) {
+function MdxParticleEmitter2Speed(stream) {
 	
 }
 
@@ -348,7 +352,7 @@ function ParticleEmitter2Speed (stream) {
 /// Desc ?
 /// Id KRVS
 /// Uses class ScalingTrack
-function RibbonEmitterVisibility (stream) {
+function MdxRibbonEmitterVisibility(stream) {
 	
 }
 
@@ -356,7 +360,7 @@ function RibbonEmitterVisibility (stream) {
 /// Desc ?
 /// Id KRHA
 /// Uses class ScalingTrack
-function RibbonEmitterHeightAbove (stream) {
+function MdxRibbonEmitterHeightAbove(stream) {
 	
 }
 
@@ -364,7 +368,7 @@ function RibbonEmitterHeightAbove (stream) {
 /// Desc ?
 /// Id KRHB
 /// Uses class ScalingTrack
-function RibbonEmitterHeightBelow (stream) {
+function MdxRibbonEmitterHeightBelow(stream) {
 	
 }
 
@@ -374,15 +378,15 @@ function RibbonEmitterHeightBelow (stream) {
 /// Uses class GeosetTranslation
 /// Uses class GeosetRotation
 /// Uses class GeosetScaling
-function Node (stream) {
+function MdxNode(stream) {
 	
 }
 
 /// class VersionChunk
 /// Desc ?
 /// Id VERS
-function VersionChunk (stream, size) {
-	console.log("VersionChunk...");
+function MdxVersionChunk(stream, size) {
+	log("VersionChunk...");
 	
 	this.version = stream.readUint32();
 	
@@ -390,14 +394,14 @@ function VersionChunk (stream, size) {
 		console.log("\tversion = " + this.version);
 	}
 	
-	console.log("OK");
+	log("OK");
 }
 
 /// class ModelChunk
 /// Desc ?
 /// Id MODL
-function ModelChunk (stream, size) {
-	console.log("ModelChunk...");
+function MdxModelChunk(stream, size) {
+	log("ModelChunk...");
 	
 	this.name = stream.read(80);
 	this.animationFileName = stream.read(260);
@@ -415,86 +419,94 @@ function ModelChunk (stream, size) {
 		console.log("\tblendTime = " + this.blendTime);
 	}
 	
-	console.log("OK");
+	log("OK");
 }
 
 /// class SequenceChunk
 /// Desc ?
 /// Id SEQS
 /// Uses class Sequence
-function SequenceChunk (stream, size) {
-	console.log("SequenceChunk...");
+function MdxSequenceChunk(stream, size) {
+	log("SequenceChunk...");
 	
 	var nrOfSequences = size / 132;
-	this.sequences = Array(nrOfSequences);
+	var i;
 	
-	for (var i = 0; i < nrOfSequences; i++) {
+	this.sequences = new Array(nrOfSequences);
+	
+	for (i = 0; i < nrOfSequences; i++) {
 		if (typeof debug !== 'undefined') {
 			console.log("\tsequence " + i);
 		}
 		
-		this.sequences[i] = new Sequence(stream);
+		this.sequences[i] = new MdxSequence(stream);
 	}
 	
-	console.log("OK");
+	log("OK");
 }
 
 /// class GlobalSequenceChunk
 /// Desc ?
 /// Id GLBS
 /// Uses class GlobalSequence
-function GlobalSequenceChunk (stream, size) {
-	console.log("GlobalSequenceChunk...");
+function MdxGlobalSequenceChunk(stream, size) {
+	log("GlobalSequenceChunk...");
 	
 	var nrOfGlobalSequences = size / 4;
-	this.globalSequences = Array(nrOfGlobalSequences);
+	var i;
 	
-	for (var i = 0; i < nrOfGlobalSequences; i++) {
+	this.globalSequences = new Array(nrOfGlobalSequences);
+	
+	for (i = 0; i < nrOfGlobalSequences; i++) {
 		if (typeof debug !== 'undefined') {
 			console.log("\tglobal sequence " + i);
 		}
 		
-		this.globalSequences[i] = new GlobalSequence(stream);
+		this.globalSequences[i] = new MdxGlobalSequence(stream);
 	}
 	
-	console.log("OK");
+	log("OK");
 }
 
 /// class TextureChunk
 /// Desc ?
 /// Id TEXS
 /// Uses class Texture
-function TextureChunk (stream, size) {
-	console.log("TextureChunk...");
+function MdxTextureChunk(stream, size) {
+	log("TextureChunk...");
 	
 	var nrOfTextures = size / 268;
-	this.textures = Array(nrOfTextures);
+	var i;
 	
-	for (var i = 0; i < nrOfTextures; i++) {
+	this.textures = new Array(nrOfTextures);
+	
+	for (i = 0; i < nrOfTextures; i++) {
 		if (typeof debug !== 'undefined') {
 			console.log("\ttexture " + i);
 		}
 		
-		this.textures[i] = new Texture(stream);
+		this.textures[i] = new MdxTexture(stream);
 	}
 	
-	console.log("OK");
+	log("OK");
 }
 
 /// class LayerChunk
 /// Desc ?
 /// Id LAYS
 /// Uses class Layer
-function LayerChunk (stream, size) {
+function MdxLayerChunk(stream, size) {
 	var nrOfLayers = stream.readUint32();
-	this.layers = Array(nrOfLayers);
+	var i;
 	
-	for (var i = 0; i < nrOfLayers; i++) {
+	this.layers = new Array(nrOfLayers);
+	
+	for (i = 0; i < nrOfLayers; i++) {
 		if (typeof debug !== 'undefined') {
 			console.log("\t\t\tlayer " + i);
 		}
 		
-		this.layers[i] = new Layer(stream);
+		this.layers[i] = new MdxLayer(stream);
 	}
 }
 
@@ -502,14 +514,14 @@ function LayerChunk (stream, size) {
 /// Desc ?
 /// Id MATS
 /// Uses class Material
-function MaterialChunk (stream, size) {
-	console.log("MaterialChunk...");
+function MdxMaterialChunk(stream, size) {
+	log("MaterialChunk...");
 	
 	var inclusiveSize = 0;
 	var totalInclusiveSize = 0;
-	this.materials = Array();
+	this.materials = [];
 	
-	while (totalInclusiveSize != size) {
+	while (totalInclusiveSize !== size) {
 		inclusiveSize = stream.readUint32();
 		totalInclusiveSize += inclusiveSize;
 		
@@ -517,36 +529,36 @@ function MaterialChunk (stream, size) {
 			console.log("\tmaterial " + this.materials.length);
 		}
 		
-		this.materials[this.materials.length] = new Material(stream);
+		this.materials.push(new MdxMaterial(stream));
 	}
 	
-	console.log("OK");
+	log("OK");
 }
 
 /// class TextureAnimationChunk
 /// Desc ?
 /// Id TXAN
 /// Uses class TextureAnimation
-function TextureAnimationChunk (stream, size) {
+function MdxTextureAnimationChunk(stream, size) {
 	console.log("TextureAnimationChunk...");
 	
 	stream.skip(size);
 	
-	console.log("OK");
+	console.log("Oops, not impelemented yet");
 }
 
 /// class GeosetChunk
 /// Desc ?
 /// Id GEOS
 /// Uses class Geoset
-function GeosetChunk (stream, size) {
-	console.log("GeosetChunk...");
+function MdxGeosetChunk(stream, size) {
+	log("GeosetChunk...");
 	
 	var inclusiveSize = 0;
 	var totalInclusiveSize = 0;
-	this.geosets = Array();
+	this.geosets = [];
 	
-	while (totalInclusiveSize != size) {
+	while (totalInclusiveSize !== size) {
 		inclusiveSize = stream.readUint32();
 		totalInclusiveSize += inclusiveSize;
 		
@@ -554,24 +566,24 @@ function GeosetChunk (stream, size) {
 			console.log("\tgeoset " + this.geosets.length);
 		}
 		
-		this.geosets[this.geosets.length] = new Geoset(stream);
+		this.geosets[this.geosets.length] = new MdxGeoset(stream);
 	}
 	
-	console.log("OK");
+	log("OK");
 }
 
 /// class GeosetAnimationChunk
 /// Desc ?
 /// Id GEOA
 /// Uses class GeosetAnimation
-function GeosetAnimationChunk (stream, size) {
-	console.log("GeosetAnimationChunk...");
+function MdxGeosetAnimationChunk(stream, size) {
+	log("GeosetAnimationChunk...");
 	
 	var inclusiveSize = 0;
 	var totalInclusiveSize = 0;
-	this.geosetAnimations = Array();
+	this.geosetAnimations = [];
 	
-	while (totalInclusiveSize != size) {
+	while (totalInclusiveSize !== size) {
 		inclusiveSize = stream.readUint32();
 		totalInclusiveSize += inclusiveSize;
 		
@@ -579,113 +591,113 @@ function GeosetAnimationChunk (stream, size) {
 			console.log("\tgeosetAnimation " + this.geosetAnimations.length);
 		}
 		
-		this.geosetAnimations[this.geosetAnimations.length] = new GeosetAnimation(stream);
+		this.geosetAnimations[this.geosetAnimations.length] = new MdxGeosetAnimation(stream);
 	}
 	
-	console.log("OK");
+	log("OK");
 }
 
 /// class BoneChunk
 /// Desc ?
 /// Id BONE
 /// Uses class Bone
-function BoneChunk (stream, size) {
-	console.log("BoneChunk...");
+function MdxBoneChunk(stream, size) {
+	log("BoneChunk...");
 	
 	stream.skip(size);
 	
-	console.log("OK");
+	log("Oops, not impelemented yet");
 }
 
 /// class LightChunk
 /// Desc ?
 /// Id LITE
 /// Uses class Light
-function LightChunk (stream, size) {
-	console.log("LightChunk...");
+function MdxLightChunk(stream, size) {
+	log("LightChunk...");
 	
 	stream.skip(size);
 	
-	console.log("OK");
+	log("Oops, not impelemented yet");
 }
 
 /// class HelperChunk
 /// Desc ?
 /// Id HELP
 /// Uses class Helper
-function HelperChunk (stream, size) {
-	console.log("HelperChunk...");
+function MdxHelperChunk(stream, size) {
+	log("HelperChunk...");
 	
 	stream.skip(size);
 	
-	console.log("OK");
+	log("Oops, not impelemented yet");
 }
 
 /// class AttachmentChunk
 /// Desc ?
 /// Id ATCH
 /// Uses class Attachment
-function AttachmentChunk (stream, size) {
-	console.log("AttachmentChunk...");
+function MdxAttachmentChunk(stream, size) {
+	log("AttachmentChunk...");
 	
 	stream.skip(size);
 	
-	console.log("OK");
+	log("Oops, not impelemented yet");
 }
 
 /// class PivotPointChunk
 /// Desc ?
 /// Id PIVT
 /// Uses class PivotPoint
-function PivotPointChunk (stream, size) {
-	console.log("PivotPointChunk...");
+function MdxPivotPointChunk(stream, size) {
+	log("PivotPointChunk...");
 	
 	stream.skip(size);
 	
-	console.log("OK");
+	log("Oops, not impelemented yet");
 }
 
 /// class ParticleEmitterChunk
 /// Desc ?
 /// Id PREM
 /// Uses class ParticleEmitter
-function ParticleEmitterChunk (stream, size) {
-	console.log("ParticleEmitterChunk...");
+function MdxParticleEmitterChunk(stream, size) {
+	log("ParticleEmitterChunk...");
 	
 	stream.skip(size);
 	
-	console.log("OK");
+	log("Oops, not impelemented yet");
 }
 
 /// class ParticleEmitter2Chunk
 /// Desc ?
 /// Id PRE2
 /// Uses class ParticleEmitter2
-function ParticleEmitter2Chunk (stream, size) {
-	console.log("ParticleEmitter2Chunk...");
+function MdxParticleEmitter2Chunk(stream, size) {
+	log("ParticleEmitter2Chunk...");
 	
 	stream.skip(size);
 	
-	console.log("OK");
+	log("Oops, not impelemented yet");
 }
 
 /// class RibbonEmitterChunk
 /// Desc ?
 /// Id RIBB
 /// Uses class RibbonEmitter
-function RibbonEmitterChunk (stream, size) {
-	console.log("RibbonEmitterChunk...");
+function MdxRibbonEmitterChunk(stream, size) {
+	log("RibbonEmitterChunk...");
 	
 	stream.skip(size);
 	
-	console.log("OK");
+	log("Oops, not impelemented yet");
 }
 
 /// class Tracks
 /// Desc ?
 /// Id KEVT
 /// Uses class Track
-function Tracks (stream, size) {
+function MdxTracks(stream, size) {
 	
 }
 
@@ -693,34 +705,34 @@ function Tracks (stream, size) {
 /// Desc ?
 /// Id EVTS
 /// Uses class EventObject
-function EventObjectChunk (stream, size) {
-	console.log("EventObjectChunk...");
+function MdxEventObjectChunk(stream, size) {
+	log("EventObjectChunk...");
 	
 	stream.skip(size);
 	
-	console.log("OK");
+	log("Oops, not impelemented yet");
 }
 
 /// class CameraChunk
 /// Desc ?
 /// Id CAMS
 /// Uses class Camera
-function CameraChunk (stream, size) {
-	console.log("CameraChunk...");
+function MdxCameraChunk(stream, size) {
+	log("CameraChunk...");
 	
 	stream.skip(size);
 	
-	console.log("OK");
+	log("Oops, not impelemented yet");
 }
 
 /// class CollisionShapeChunk
 /// Desc ?
 /// Id CLID
 /// Uses class CollisionShape
-function CollisionShapeChunk (stream, size) {
-	console.log("CollisionShapeChunk...");
+function MdxCollisionShapeChunk(stream, size) {
+	log("CollisionShapeChunk...");
 	
 	stream.skip(size);
 	
-	console.log("OK");
+	log("Oops, not impelemented yet");
 }
